@@ -19,7 +19,7 @@
             </div>
             <div class="card-body">
                 <form method="post" id="product_action" class="form-horizontal">
-
+                    <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>" />
                     <input type="hidden" name="id" value="<?php echo $company['id'] ?>">
 
 
@@ -57,10 +57,93 @@
     </div>
 </div>
 <script type="text/javascript">
+    // Ensure baseurl is defined
+    if (typeof baseurl === 'undefined') {
+        var baseurl = '<?php echo base_url() ?>';
+    }
+    if (typeof crsf_token === 'undefined') {
+        var crsf_token = '<?= $this->security->get_csrf_token_name(); ?>';
+    }
+    if (typeof crsf_hash === 'undefined') {
+        var crsf_hash = '<?= $this->security->get_csrf_hash(); ?>';
+    }
+    
+    document.title = 'Change Language';
+    
     $("#billing_update").click(function (e) {
         e.preventDefault();
+        
         var actionurl = baseurl + 'settings/language';
-        actionProduct(actionurl);
+        
+        $.ajax({
+            url: actionurl,
+            type: 'POST',
+            data: $("#product_action").serialize(),
+            dataType: 'json',
+            success: function(response) {
+                if (!response || !response.status) {
+                    console.error('Invalid response:', response);
+                    $("#notify .message").html("<strong>Error</strong>: Invalid response from server");
+                    $("#notify").removeClass("alert-success").addClass("alert-warning").fadeIn();
+                    return;
+                }
+                
+                var message = response.message || 'Operation completed';
+                var status = response.status;
+                
+                if (status === 'Success') {
+                    $("#notify .message").html("<strong>" + status + "</strong>: " + message);
+                    $("#notify").removeClass("alert-warning").addClass("alert-success").fadeIn();
+                    
+                    // Safe scroll to notification
+                    var notifyEl = $('#notify');
+                    if (notifyEl.length && notifyEl.offset()) {
+                        $("html, body").animate({ scrollTop: notifyEl.offset().top }, 200);
+                    }
+                    
+                    // Reload page after 1 second to reflect language change
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1000);
+                } else {
+                    $("#notify .message").html("<strong>" + status + "</strong>: " + message);
+                    $("#notify").removeClass("alert-success").addClass("alert-warning").fadeIn();
+                    
+                    // Safe scroll to notification
+                    var notifyEl = $('#notify');
+                    if (notifyEl.length && notifyEl.offset()) {
+                        $("html, body").animate({ scrollTop: notifyEl.offset().top }, 1000);
+                    }
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX Error:', status, error, xhr);
+                var errorMsg = 'An error occurred. Please try again.';
+                
+                try {
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMsg = xhr.responseJSON.message;
+                    } else if (xhr.responseText) {
+                        // Try to parse response text
+                        var response = JSON.parse(xhr.responseText);
+                        if (response && response.message) {
+                            errorMsg = response.message;
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error parsing response:', e);
+                }
+                
+                $("#notify .message").html("<strong>Error</strong>: " + errorMsg);
+                $("#notify").removeClass("alert-success").addClass("alert-warning").fadeIn();
+                
+                // Safe scroll to notification
+                var notifyEl = $('#notify');
+                if (notifyEl.length && notifyEl.offset()) {
+                    $("html, body").animate({ scrollTop: notifyEl.offset().top }, 1000);
+                }
+            }
+        });
     });
 </script>
 

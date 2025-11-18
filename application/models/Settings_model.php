@@ -153,21 +153,17 @@ class Settings_model extends CI_Model
             $this->db->set($data);
             $this->db->where('id', $existing_id);
             if ($this->db->update('geopos_system')) {
-                echo json_encode(array('status' => 'Success', 'message' =>
-                $this->lang->line('UPDATED')));
+                return array('status' => 'Success', 'message' => $this->lang->line('UPDATED'));
             } else {
-                echo json_encode(array('status' => 'Error', 'message' =>
-                $this->lang->line('ERROR')));
+                return array('status' => 'Error', 'message' => $this->lang->line('ERROR'));
             }
         } else {
             // Insert new record
             $data['id'] = $id;
             if ($this->db->insert('geopos_system', $data)) {
-                echo json_encode(array('status' => 'Success', 'message' =>
-                $this->lang->line('ADDED')));
+                return array('status' => 'Success', 'message' => $this->lang->line('ADDED'));
             } else {
-                echo json_encode(array('status' => 'Error', 'message' =>
-                $this->lang->line('ERROR')));
+                return array('status' => 'Error', 'message' => $this->lang->line('ERROR'));
             }
         }
     }

@@ -506,9 +506,9 @@ class Settings extends CI_Controller
             $spost = $this->input->post('spos');
             $roundoff = $this->input->post('roundoff');
             $r_precision = $this->input->post('r_precision');
-            $auto_post = $this->input->post('auto_post');
-            $show_profit_per = $this->input->post('show_profit_per'); // New field
-            $auto_pricing = $this->input->post('auto_pricing'); // New field
+            $auto_post = (int)$this->input->post('auto_post', 0); // Cast to int with default 0
+            $show_profit_per = (int)$this->input->post('show_profit_per', 0); // Cast to int with default 0
+            $auto_pricing = (int)$this->input->post('auto_pricing', 0); // Cast to int with default 0
             $tax_type = $this->input->post('tax_type') ?: 'VAT'; // Tax type field
             $tax_rate = $this->input->post('tax_rate') ?: 20; // Tax rate field
 
@@ -1043,14 +1043,32 @@ class Settings extends CI_Controller
         $this->load->library("Common");
 
         if ($this->input->post()) {
-
-
-
+            // Set proper headers for JSON response
+            $this->output->set_content_type('application/json');
+            
             $lang = $this->input->post('language', true);
 
+            // Validate input
+            if (empty($lang)) {
+                echo json_encode(['status' => 'Error', 'message' => 'Language is required']);
+                return;
+            }
 
-
-            $this->settings->update_language(1, $lang);
+            // Update language and get response
+            $result = $this->settings->update_language(1, $lang);
+            
+            // Ensure result is valid
+            if (!is_array($result) || !isset($result['status'])) {
+                echo json_encode(['status' => 'Error', 'message' => 'An error occurred while updating language']);
+                return;
+            }
+            
+            // Ensure message exists
+            $message = isset($result['message']) && !empty($result['message']) ? $result['message'] : 'Language updated successfully';
+            
+            // Return JSON response
+            echo json_encode(['status' => $result['status'], 'message' => $message]);
+            return;
         } else {
 
 
@@ -1063,7 +1081,14 @@ class Settings extends CI_Controller
 
             $data['prefix'] = $this->settings->prefix();
 
+            // Get languages with current selection - ensure fresh data
+            $this->load->database();
             $data['langs'] = $this->common->languages();
+            
+            // Debug: Verify current language in database (can be removed later)
+            $lang_check = $this->db->query("SELECT lang FROM geopos_system WHERE id=1 LIMIT 1");
+            $lang_data = $lang_check->row_array();
+            // This ensures we're getting fresh data from database
 
             $this->load->view('fixed/header', $head);
 

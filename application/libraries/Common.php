@@ -236,14 +236,71 @@ class Common
             $query = $this->PI->db->get();
             $out = $query->row_array();
         } else {
-            $this->PI->db->select('*');
+            // Get language from geopos_system table
+            $this->PI->db->select('lang');
             $this->PI->db->from('geopos_system');
             $this->PI->db->where('id', 1);
             $query = $this->PI->db->get();
             $out = $query->row_array();
+            
+            // If no result or empty, try without WHERE clause (in case id is not 1)
+            if (empty($out) || !isset($out['lang']) || empty($out['lang'])) {
+                $this->PI->db->select('lang');
+                $this->PI->db->from('geopos_system');
+                $this->PI->db->limit(1);
+                $query = $this->PI->db->get();
+                $out = $query->row_array();
+            }
         }
-        $lang = '<option value="' . $out['lang'] . '">--' . $out['lang'] . '--</option><option value="english">English</option> <option value="arabic">Arabic</option><option value="bengali">Bengali</option>
-                       <option value="czech">Czech</option><option value="chinese-simplified">Chinese-simplified</option> <option value="chinese-traditional">Chinese-traditional</option> <option value="dutch">Dutch</option><option value="filipino">Filipino</option><option value="french">French</option><option value="german">German</option><option value="greek">Greek</option><option value="hebrew">Hebrew</option><option value="hindi">Hindi</option><option value="indonesian">Indonesian</option>  <option value="italian">Italian</option><option value="japanese">Japanese</option><option value="javanese">Javanese</option><option value="khmer">Khmer</option><option value="korean">Korean</option> <option value="polish">Polish</option><option value="portuguese">Portuguese</option> <option value="russian">Russian</option> <option value="romanian">Romanian</option> <option value="swedish">Swedish</option><option value="spanish">Spanish</option><option value="thai">Thai</option><option value="turkish">Turkish</option><option value="vietnamese">Vietnamese</option><option value="urdu">Urdu</option>';
+        
+        // Get current language, default to 'english' if not set
+        // Trim and convert to lowercase for consistent comparison
+        $current_lang = 'english'; // default
+        if (isset($out['lang']) && !empty($out['lang'])) {
+            $current_lang = strtolower(trim($out['lang']));
+        }
+        
+        // Language options array
+        $languages = array(
+            'english' => 'English',
+            'arabic' => 'Arabic',
+            'bengali' => 'Bengali',
+            'czech' => 'Czech',
+            'chinese-simplified' => 'Chinese-simplified',
+            'chinese-traditional' => 'Chinese-traditional',
+            'dutch' => 'Dutch',
+            'filipino' => 'Filipino',
+            'french' => 'French',
+            'german' => 'German',
+            'greek' => 'Greek',
+            'hebrew' => 'Hebrew',
+            'hindi' => 'Hindi',
+            'indonesian' => 'Indonesian',
+            'italian' => 'Italian',
+            'japanese' => 'Japanese',
+            'javanese' => 'Javanese',
+            'khmer' => 'Khmer',
+            'korean' => 'Korean',
+            'polish' => 'Polish',
+            'portuguese' => 'Portuguese',
+            'russian' => 'Russian',
+            'romanian' => 'Romanian',
+            'swedish' => 'Swedish',
+            'spanish' => 'Spanish',
+            'thai' => 'Thai',
+            'turkish' => 'Turkish',
+            'vietnamese' => 'Vietnamese',
+            'urdu' => 'Urdu'
+        );
+        
+        // Build options HTML with current language selected
+        $lang = '';
+        foreach ($languages as $value => $label) {
+            // Case-insensitive comparison to handle any case variations
+            $selected = (strtolower(trim($value)) == $current_lang) ? ' selected="selected"' : '';
+            $lang .= '<option value="' . htmlspecialchars($value) . '"' . $selected . '>' . htmlspecialchars($label) . '</option>';
+        }
+        
         return $lang;
     }
 

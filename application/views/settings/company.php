@@ -81,7 +81,7 @@
 
                                 <div class="col-sm-10">
 
-                                    <input type="text" placeholder="<?php echo getTaxName(); ?>" class="form-control margin-bottom  " name="tax" value="<?php echo $company['tax'] ?>">
+                                    <input type="text" placeholder="<?php echo $this->config->item('tax_type'); ?>" class="form-control margin-bottom  " name="tax" value="<?php echo $company['tax'] ?>">
 
                                 </div>
 
@@ -372,8 +372,16 @@
                                     <input type="hidden" name="id" value="<?php echo $company['id'] ?>">
 
                                     <div class="ibox-content no-padding border-left-right">
-
-                                        <img alt="image" id="dpic" class="col" src="<?php echo base_url('userfiles/company/') . $company['logo'] . '?t=' . rand(5, 99); ?>">
+                                        <?php
+                                        // Check if logo exists, if not use placeholder
+                                        $logo_preview = '';
+                                        if (!empty($company['logo']) && file_exists(FCPATH . 'userfiles/company/' . $company['logo'])) {
+                                            $logo_preview = base_url('userfiles/company/') . $company['logo'] . '?t=' . rand(5, 99);
+                                        } else {
+                                            $logo_preview = base_url('app-assets/images/image.png');
+                                        }
+                                        ?>
+                                        <img alt="image" id="dpic" class="col" src="<?php echo $logo_preview; ?>">
 
                                     </div>
 

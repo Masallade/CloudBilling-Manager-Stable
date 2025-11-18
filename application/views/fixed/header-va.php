@@ -1281,7 +1281,14 @@ function lang_line($key, $fallback = '') {
 
 // Get company details for logo
 $company = $CI->settings->company_details(1);
-$company_logo = isset($company['logo']) && !empty($company['logo']) ? $company['logo'] : 'default.png';
+$company_logo = isset($company['logo']) && !empty($company['logo']) ? $company['logo'] : '';
+// Check if logo file exists, if not use placeholder
+$logo_path = '';
+if (!empty($company_logo) && file_exists(FCPATH . 'userfiles/company/' . $company_logo)) {
+    $logo_path = base_url('userfiles/company/') . $company_logo . '?t=' . time();
+} else {
+    $logo_path = base_url('app-assets/images/image.png');
+}
 ?>
 
 <body class="vertical-layout vertical-menu-modern 2-columns menu-expanded fixed-navbar" data-open="click" data-menu="vertical-menu-modern" data-col="2-columns">
@@ -1296,7 +1303,7 @@ $company_logo = isset($company['logo']) && !empty($company['logo']) ? $company['
             <!-- Company Logo Section -->
             <div class="sidebar-logo-container">
                 <a href="<?= base_url(); ?>dashboard/" style="display: block; text-decoration: none;">
-                    <img src="<?php echo base_url('userfiles/company/') . $company_logo . '?t=' . time(); ?>" 
+                    <img src="<?php echo $logo_path; ?>" 
                          alt="<?php echo isset($company['cname']) ? htmlspecialchars($company['cname']) : 'Company Logo'; ?>" 
                          class="company-logo-img">
                     <?php if (isset($company['cname']) && !empty($company['cname'])) { ?>
@@ -1971,11 +1978,15 @@ $company_logo = isset($company['logo']) && !empty($company['logo']) ? $company['
                                     <a href="<?php echo base_url(); ?>settings/format" data-toggle="dropdown"><i class="fas fa-file-invoice"></i> <?php echo $this->lang->line('InvoiceFormat'); ?></a>
                                 </li>
                             <?php } ?>
-                            <?php if ($this->aauth->permission_new(null, 'settingsThirdPartyIntegration')) { ?>
+
+                            <?php /*if ($this->aauth->permission_new(null, 'settingsThirdPartyIntegration')) { ?>
                                 <li class="menu-item" title="<?php echo $this->lang->line('ThirdPartyIntegeration'); ?>">
                                     <a href="<?php echo base_url(); ?>settings/integeration"><i class="fas fa-plug"></i> <?php echo $this->lang->line('ThirdPartyIntegeration'); ?></a>
                                 </li>
-                            <?php } ?>
+
+                            <?php }
+                            
+                            */ ?>
                         </ul>
                     </li>
                 <?php } ?>
