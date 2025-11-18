@@ -1,0 +1,26 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /demo.cloudbillingmanager.com/
+
+    # Allow access to existing files and directories
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # Redirect everything else to index.php
+    RewriteRule ^(.*)$ index.php/$1 [L]
+</IfModule>
+
+# Prevent directory browsing
+Options -Indexes
+
+# Protect sensitive files
+<FilesMatch "\.(htaccess|htpasswd|ini|log|sh|sql)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+
+# Server-specific PHP handler - commented out for XAMPP
+# <FilesMatch \.php$>
+#         SetHandler proxy:fcgi://cloudbilling-php74
+# </FilesMatch>

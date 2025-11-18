@@ -1,0 +1,95 @@
+================================================================================
+WIFI NETWORK ACCESS SETUP INSTRUCTIONS
+================================================================================
+
+Your CodeIgniter project is now configured to be accessed from other devices
+on your WiFi network.
+
+YOUR LOCAL IP ADDRESS: 192.168.100.83
+ACCESS URL: http://192.168.100.83/demo.cloudbillingmanager.com/
+
+================================================================================
+STEP 1: CONFIGURE WINDOWS FIREWALL
+================================================================================
+
+Option A - Using PowerShell (Run as Administrator):
+---------------------------------------------------
+New-NetFirewallRule -DisplayName "Apache HTTP Server" -Direction Inbound -Protocol TCP -LocalPort 80 -Action Allow
+
+Option B - Manual Configuration:
+----------------------------------
+1. Open Windows Defender Firewall
+2. Click "Advanced settings"
+3. Click "Inbound Rules" → "New Rule"
+4. Select "Port" → Next
+5. Select "TCP" and enter port "80" → Next
+6. Select "Allow the connection" → Next
+7. Check all profiles → Next
+8. Name it "Apache HTTP Server" → Finish
+
+================================================================================
+STEP 2: VERIFY APACHE IS RUNNING
+================================================================================
+
+- Open XAMPP Control Panel
+- Ensure Apache service is running (green status)
+
+================================================================================
+STEP 3: ACCESS FROM OTHER DEVICES
+================================================================================
+
+From any device on the same WiFi network, open a web browser and navigate to:
+
+    http://192.168.100.83/demo.cloudbillingmanager.com/
+
+IMPORTANT NOTES:
+---------------
+- All devices must be on the SAME WiFi network
+- Your computer must be turned on and XAMPP running
+- If your IP address changes, update the base_url in:
+  application/config/config.php
+
+================================================================================
+STEP 4: TROUBLESHOOTING
+================================================================================
+
+If you cannot access from other devices:
+
+1. Check Windows Firewall:
+   - Ensure port 80 is allowed (see Step 1)
+
+2. Verify IP Address:
+   - Run: ipconfig
+   - Look for "IPv4 Address" under your WiFi adapter
+   - Update base_url if IP has changed
+
+3. Test from same computer:
+   - Try: http://192.168.100.83/demo.cloudbillingmanager.com/
+   - If this works, the issue is likely firewall-related
+
+4. Check Apache is listening on all interfaces:
+   - In httpd.conf, ensure: Listen 80 (not Listen 127.0.0.1:80)
+
+5. Verify database connection:
+   - Ensure MySQL is running in XAMPP
+   - Database name: cloudbilling_v2
+   - Check database.php configuration
+
+================================================================================
+SWITCHING BETWEEN LOCALHOST AND NETWORK ACCESS
+================================================================================
+
+To switch back to localhost-only access, change in application/config/config.php:
+
+LOCALHOST ONLY:
+$config['base_url'] = 'http://localhost/demo.cloudbillingmanager.com/';
+
+NETWORK ACCESS:
+$config['base_url'] = 'http://192.168.100.83/demo.cloudbillingmanager.com/';
+
+================================================================================
+
+
+
+
+

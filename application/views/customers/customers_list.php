@@ -1,0 +1,176 @@
+<?php
+$due = false;
+if ($this->input->get('due')) {
+    $due = true;
+} ?>
+<div class="content-body">
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title"><a
+                        href="<?php echo base_url('customers') ?>"
+                        class="mr-5">
+                    <?php echo $this->lang->line('Clients') ?></a></h4>
+            <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
+        </div>
+        <div class="card-content">
+            <div id="notify" class="alert alert-success" style="display:none;">
+                <a href="#" class="close" data-dismiss="alert">&times;</a>
+                <div class="message"></div>
+            </div>
+            <div class="card-body">
+  
+<br>
+<br>
+                <table id="clientstable" class="table table-striped table-bordered zero-configuration" cellspacing="0"
+                       width="100%">
+                    <thead>
+                    <tr>
+                        <th> A/C #<?php  //echo $this->lang->line('Name') ?></th>
+      
+                        <th>Customer <?php //echo $this->lang->line('Address') ?></th> 
+                        <th> <?php echo $this->lang->line('Address') ?></th>
+                        <th><?php echo 'Balance'; //$this->lang->line('Email') ?>(GBP)</th>
+                        <th><?php echo $this->lang->line('Phone') ?></th>
+                        <th>Last Invoice Date </th>
+                        <th>Settings</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                   <?php foreach($customers as $key=>$value){
+                        $sql='SELECT id, max(invoicedate) as invoicedate  from geopos_invoices where csd= "'.$value["id"].'"';
+                     $query = $this->db->query($sql);
+                   $response=$query->row_array();
+                 $new_id = $response['invoicedate'];
+                       echo "<tr><td>".$value["name"]."</td><td>".$value["company"]."</td><td>".$value["address"]."</td><td>".$value["balance"]."</td><td>".$value["phone"]."</td><td>".$new_id."</td><td>".'<a href="view?id=' . $value["id"] . '" class="btn btn-info btn-sm"><span class="fa fa-eye"></span>  ' . $this->lang->line('View') . '</a><a href="edit?id=' . $value["id"] . '" class="btn btn-primary btn-sm"><span class="fa fa-pencil"></span>  ' . $this->lang->line('Edit') . '</a> <a href="#" data-object-id="' . $value["id"] . '" class="btn btn-danger btn-sm delete-object"><span class="fa fa-trash"></span></a>'."</td></tr>";
+
+                    } ?>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <th>A/C #<?php  //echo $this->lang->line('Name') ?></th>
+   
+                        <th>Customer<?php //echo $this->lang->line('Address') ?></th>
+                         <th> <?php echo $this->lang->line('Address') ?></th>
+                        <th>Balance(GBP)</th>
+                        <th><?php echo $this->lang->line('Mobile') ?></th>
+                         <th>Last Invoice Date </th>
+                         <th>Settings</th>
+                    </tr>
+                    </tfoot>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div id="delete_model" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <h4 class="modal-title">Delete Customer</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <p><?php echo $this->lang->line('are_you_sure_delete_customer') ?></p>
+            </div>
+            <div class="modal-footer">
+                   <input type="hidden" class="form-control"
+                           id="object-id" name="deleteid" value="0">
+                <input type="hidden" id="action-url" value="customers/delete_i">
+                <button type="button" data-dismiss="modal" class="btn btn-primary" id="delete-confirm"><?php echo $this->lang->line('Delete') ?></button>
+                <button type="button" data-dismiss="modal" class="btn"><?php echo $this->lang->line('Cancel') ?></button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="sendMail" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><?php echo $this->lang->line('Email Selected') ?></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="sendmail_form"><input type="hidden"
+                                                name="<?php echo $this->security->get_csrf_token_name(); ?>"
+                                                value="<?php echo $this->security->get_csrf_hash(); ?>">
+                    <div class="row">
+                        <div class="col mb-1"><label
+                                    for="shortnote"><?php echo $this->lang->line('Subject') ?></label>
+                            <input type="text" class="form-control"
+                                   name="subject" id="subject">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col mb-1"><label
+                                    for="shortnote"><?php echo $this->lang->line('Message') ?></label>
+                            <textarea name="text" class="summernote" id="contents" title="Contents"></textarea></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal"><?php echo $this->lang->line('Close') ?></button>
+                <button type="button" class="btn btn-primary"
+                        id="sendNowSelected"><?php echo $this->lang->line('Send') ?></button>
+            </div>
+        </div>
+    </div>
+    </div>
+        <div id="sendSmsS" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><?php echo $this->lang->line('SMS Selected') ?></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="sendsms_form"><input type="hidden"
+                                                name="<?php echo $this->security->get_csrf_token_name(); ?>"
+                                                value="<?php echo $this->security->get_csrf_hash(); ?>"
+                    <div class="row">
+                        <div class="col mb-1"><label
+                                    for="shortnote"><?php echo $this->lang->line('Message') ?></label>
+                            <textarea name="message" class="form-control" rows="3" cols="60"></textarea></div>
+                    </div>
+                    <input type="hidden" id="action-url" value="communication/send_general">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal"><?php echo $this->lang->line('Close') ?></button>
+                <button type="button" class="btn btn-primary"
+                        id="sendSmsSelected"><?php echo $this->lang->line('Send') ?></button>
+            </div>
+        </div>
+    </div>
+    </div>
+<script>
+    $(document).ready(function () {
+        $('#clientstable').DataTable();
+    });
+
+
+        $(document).on('click', "#delete_selected", function (e) {
+            e.preventDefault();
+                if ($("#notify").length == 0) {
+        $("#c_body").html('<div id="notify" class="alert" style="display:none;"><a href="#" class="close" data-dismiss="alert">&times;</a><div class="message"></div></div>');
+    }
+            alert($(this).attr('data-lang'));
+            jQuery.ajax({
+                url: "<?php echo site_url('customers/delete_i')?>",
+                type: 'POST',
+                data: $("input[name='cust[]']:checked").serialize() + '&<?=$this->security->get_csrf_token_name()?>=' + crsf_hash + '<?php if ($due) echo "&due=true" ?>',
+                  dataType: 'json',
+                success: function (data) {
+                    $("input[name='cust[]']:checked").closest('tr').remove();
+                       $("#notify .message").html("<strong>" + data.status + "</strong>: " + data.message);
+                            $("#notify").removeClass("alert-danger").addClass("alert-success").fadeIn();
+                    $("html, body").animate({scrollTop: $('#notify').offset().top}, 1000);
+                }
+            });
+        });
+
+</script>
