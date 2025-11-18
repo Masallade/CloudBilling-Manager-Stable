@@ -1,4 +1,4 @@
-# Cloud Billing Manager (Geo POS)
+# Cloud Billing Manager
 
 A comprehensive **Accounting, Invoicing, and CRM Software** built on CodeIgniter framework. This all-in-one cloud billing solution helps businesses manage expenses, boost sales, and streamline invoices efficiently.
 
@@ -16,7 +16,7 @@ A comprehensive **Accounting, Invoicing, and CRM Software** built on CodeIgniter
 
 ## 🎯 About
 
-**Cloud Billing Manager** (formerly Geo POS) is a powerful business management system that combines Point of Sale (POS), accounting, invoicing, and Customer Relationship Management (CRM) capabilities into a single platform. It's designed to help businesses of all sizes manage their operations more efficiently.
+**Cloud Billing Manager** is a powerful business management system that combines Point of Sale (POS), accounting, invoicing, and Customer Relationship Management (CRM) capabilities into a single platform. It's designed to help businesses of all sizes manage their operations more efficiently.
 
 ### Key Highlights
 
@@ -318,17 +318,11 @@ Additional documentation files:
 
 ## 📞 Support
 
-- **Email**: support@ultimatekode.com
-- **Website**: https://www.ultimatekode.com
+- **Website**: https://www.muhammaddawood.com
 
 ## 📄 License
 
-This software is furnished under a license and may be used and copied only in accordance with the terms of such license.
-
-**Copyright (c) Rajesh Dukiya. All Rights Reserved.**
-
-If you purchased from CodeCanyon, please read the full License from:
-http://codecanyon.net/licenses/standard/
+**Owner of the code is AvantCore Technologies**
 
 ---
 
