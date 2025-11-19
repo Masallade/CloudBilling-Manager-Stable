@@ -410,7 +410,6 @@ $data_tr
 		$head['usernm'] = $this->aauth->get_user()->username;
 		$data['taxlist'] = $this->common->taxlist($this->config->item('tax'));
 		$data['exchange'] = $this->plugins->universal_api(5);
-		$data['currency'] = $this->purchase->currencies();
 		$data['customergrouplist'] = $this->customers->group_list();
 		$data['lastinvoice'] = $this->purchase->lastpurchase();
 		$data['terms'] = $this->purchase->billingterms();
@@ -1266,8 +1265,11 @@ $data_tr
 		$data['exchange'] = $this->plugins->universal_api(5);
 		$this->load->library("Common");
 		$data['taxlist'] = $this->common->taxlist_edit($data['invoice']['taxstatus']);
+		$data['taxdetails'] = $this->common->taxdetail();
+		$data['custom_fields'] = $this->custom->add_fields(2);
+		$data['lastinvoice'] = $this->purchase->lastpurchase();
 		$this->load->view('fixed/header', $head);
-		$this->load->view('purchase/edit', $data);
+		$this->load->view('purchase/newinvoice', $data);
 		$this->load->view('fixed/footer');
 	}
 

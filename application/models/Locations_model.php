@@ -57,7 +57,7 @@ class Locations_model extends CI_Model
         return $result;
     }
 
-    public function create($name, $address, $city, $region, $country, $postbox, $phone, $email, $taxid, $image, $ac_id)
+    public function create($name, $address, $city, $region, $country, $postbox, $phone, $email)
     {
         $data = array(
             'cname' => $name,
@@ -67,10 +67,7 @@ class Locations_model extends CI_Model
             'country' => $country,
             'postbox' => $postbox,
             'phone' => $phone,
-            'email' => $email,
-            'taxid' => $taxid,
-            'logo' => $image,
-            'ext' => $ac_id
+            'email' => $email
         );
 
         if ($this->db->insert('geopos_locations', $data)) {
@@ -83,7 +80,7 @@ class Locations_model extends CI_Model
 
     }
 
-    public function edit($id, $name, $address, $city, $region, $country, $postbox, $phone, $email, $taxid, $image, $ac_id, $wid)
+    public function edit($id, $name, $address, $city, $region, $country, $postbox, $phone, $email)
     {
         $data = array(
             'cname' => $name,
@@ -93,11 +90,7 @@ class Locations_model extends CI_Model
             'country' => $country,
             'postbox' => $postbox,
             'phone' => $phone,
-            'email' => $email,
-            'taxid' => $taxid,
-            'logo' => $image,
-            'ext' => $ac_id,
-            'wid' => $wid
+            'email' => $email
         );
 
         $this->db->set($data);

@@ -63,7 +63,7 @@
                                 <table class="tfr">
                                     <tbody>
                                         <tr>
-                                            <td class=""><strong>Total <?php echo getTaxName(); ?></strong> (<span class="currenty lightMode"><?= $this->config->item('currency'); ?></span>)
+                                            <td class=""><strong>Total bhai ye nhi chala <?php echo getTaxName(); ?></strong> (<span class="currenty lightMode"><?= $this->config->item('currency'); ?></span>)
                                             </td>
                                             <td align="right">
                                                 <span class="currenty lightMode"><?= $this->config->item('currency'); ?></span> <span id="overall-total-vat">0</span>

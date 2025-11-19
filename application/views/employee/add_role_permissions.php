@@ -405,6 +405,8 @@
 
                                 <label><input type="checkbox" name="stockWarehouseView"> View Warehouse</label>
 
+                                <label><input type="checkbox" name="stockUnits"> Measurement Units</label>
+
                                 <label><input type="checkbox" name="stockProductsLabel"> Products Label</label>
 
                                 <label><input type="checkbox" name="stockCustomLabel"> Custom Label</label>

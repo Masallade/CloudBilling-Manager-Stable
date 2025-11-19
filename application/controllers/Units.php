@@ -28,7 +28,7 @@ class Units extends CI_Controller
         if (!$this->aauth->is_loggedin()) {
             redirect('/user/', 'refresh');
         }
-        if ($this->aauth->get_user()->roleid < 4) {
+        if (!$this->aauth->permission_new(null, 'stockUnits')) {
 
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
 

@@ -73,6 +73,136 @@ function getTaxTypeFromDB() {
 
 $config['tax_type'] = getTaxTypeFromDB();
 
+// Function to get currency from database using direct connection (before CI is initialized)
+function getCurrencyFromDB() {
+    // Default currency
+    $currency = 'GBP';
+    
+    // Try to read database config and connect directly
+    $db_config_file = APPPATH . 'config/database.php';
+    if (file_exists($db_config_file)) {
+        // Include database config to get connection details
+        include($db_config_file);
+        
+        if (isset($db['default'])) {
+            $hostname = isset($db['default']['hostname']) ? $db['default']['hostname'] : 'localhost';
+            $username = isset($db['default']['username']) ? $db['default']['username'] : '';
+            $password = isset($db['default']['password']) ? $db['default']['password'] : '';
+            $database = isset($db['default']['database']) ? $db['default']['database'] : '';
+            
+            // Create direct MySQLi connection
+            $mysqli = @new mysqli($hostname, $username, $password, $database);
+            
+            if ($mysqli && !$mysqli->connect_error) {
+                // Query to get currency from geopos_system table (single row, no id needed)
+                $query = "SELECT currency FROM geopos_system LIMIT 1";
+                $result = $mysqli->query($query);
+                
+                if ($result && $result->num_rows > 0) {
+                    $row = $result->fetch_assoc();
+                    if (isset($row['currency']) && !empty($row['currency'])) {
+                        $currency = trim($row['currency']);
+                    }
+                }
+                
+                $mysqli->close();
+            }
+        }
+    }
+    
+    // Always return uppercase, default to GBP if empty
+    $currency = !empty($currency) ? strtoupper($currency) : 'GBP';
+    return $currency;
+}
+
+// Function to get url value from univarsal_api table using direct connection (before CI is initialized)
+function getUrlFromUnivarsalApi() {
+    // Default url value
+    $url = '';
+    
+    // Try to read database config and connect directly
+    $db_config_file = APPPATH . 'config/database.php';
+    if (file_exists($db_config_file)) {
+        // Include database config to get connection details
+        include($db_config_file);
+        
+        if (isset($db['default'])) {
+            $hostname = isset($db['default']['hostname']) ? $db['default']['hostname'] : 'localhost';
+            $username = isset($db['default']['username']) ? $db['default']['username'] : '';
+            $password = isset($db['default']['password']) ? $db['default']['password'] : '';
+            $database = isset($db['default']['database']) ? $db['default']['database'] : '';
+            
+            // Create direct MySQLi connection
+            $mysqli = @new mysqli($hostname, $username, $password, $database);
+            
+            if ($mysqli && !$mysqli->connect_error) {
+                // Query to get url from univarsal_api table (single record, no id needed)
+                $query = "SELECT url FROM univarsal_api LIMIT 1";
+                $result = $mysqli->query($query);
+                
+                if ($result && $result->num_rows > 0) {
+                    $row = $result->fetch_assoc();
+                    if (isset($row['url']) && $row['url'] !== null && $row['url'] !== '') {
+                        $url = trim($row['url']);
+                    }
+                }
+                
+                $mysqli->close();
+            }
+        }
+    }
+    
+    return $url;
+}
+
+// Function to get tax_rate from geopos_system table using direct connection (before CI is initialized)
+function getTaxRateFromDB() {
+    // Default tax rate
+    $tax_rate = 20; // Default to 20%
+    
+    // Try to read database config and connect directly
+    $db_config_file = APPPATH . 'config/database.php';
+    if (file_exists($db_config_file)) {
+        // Include database config to get connection details
+        include($db_config_file);
+        
+        if (isset($db['default'])) {
+            $hostname = isset($db['default']['hostname']) ? $db['default']['hostname'] : 'localhost';
+            $username = isset($db['default']['username']) ? $db['default']['username'] : '';
+            $password = isset($db['default']['password']) ? $db['default']['password'] : '';
+            $database = isset($db['default']['database']) ? $db['default']['database'] : '';
+            
+            // Create direct MySQLi connection
+            $mysqli = @new mysqli($hostname, $username, $password, $database);
+            
+            if ($mysqli && !$mysqli->connect_error) {
+                // Query to get tax_rate from geopos_system table (single row, no id needed)
+                $query = "SELECT tax_rate FROM geopos_system LIMIT 1";
+                $result = $mysqli->query($query);
+                
+                if ($result && $result->num_rows > 0) {
+                    $row = $result->fetch_assoc();
+                    if (isset($row['tax_rate']) && $row['tax_rate'] !== null && $row['tax_rate'] !== '') {
+                        $tax_rate = (float)$row['tax_rate'];
+                    }
+                }
+                
+                $mysqli->close();
+            }
+        }
+    }
+    
+    return $tax_rate;
+}
+
+$config['currency_geopos'] = getCurrencyFromDB();
+$config['univarsal_api_url'] = getUrlFromUnivarsalApi(); // Fetches url from univarsal_api (single record)
+$config['tax_rate'] = getTaxRateFromDB();
+
+
+
+
+
 /*
 |--------------------------------------------------------------------------
 | URI PROTOCOL

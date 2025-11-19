@@ -104,22 +104,14 @@ class Locations extends CI_Controller
             $postbox = $this->input->post('postbox', true);
             $phone = $this->input->post('phone', true);
             $email = $this->input->post('email', true);
-            $taxid = $this->input->post('taxid', true);
-            $image = $this->input->post('image', true);
-            // $cur_id = $this->input->post('cur_id', true);
-            $ac_id = $this->input->post('account', true);
-            $wid = $this->input->post('wid');
-            $this->locations->create($name, $address, $city, $region, $country, $postbox, $phone, $email, $taxid, $image, $ac_id, $wid);
+            $this->locations->create($name, $address, $city, $region, $country, $postbox, $phone, $email);
         } else {
 
 
             $head['title'] = "Add Location";
-            $data['currency'] = $this->locations->currencies();
-            $data['warehouse'] = $this->locations->warehouses();
-            $data['accounts'] = $this->locations->accountslist();
             $head['usernm'] = $this->aauth->get_user()->username;
             $this->load->view('fixed/header', $head);
-            $this->load->view('locations/create', $data);
+            $this->load->view('locations/create');
             $this->load->view('fixed/footer');
         }
     }
@@ -136,22 +128,13 @@ class Locations extends CI_Controller
             $postbox = $this->input->post('postbox', true);
             $phone = $this->input->post('phone', true);
             $email = $this->input->post('email', true);
-            $taxid = $this->input->post('taxid', true);
-            $image = $this->input->post('image', true);
-            $cur_id = $this->input->post('cur_id', true);
-            $ac_id = $this->input->post('account_v', true);
-            $wid = $this->input->post('wid');
-            $this->locations->edit($id, $name, $address, $city, $region, $country, $postbox, $phone, $email, $taxid, $image, $cur_id, $ac_id, $wid);
+            $this->locations->edit($id, $name, $address, $city, $region, $country, $postbox, $phone, $email);
         } else {
 
 
             $head['title'] = "Edit Location";
             $head['usernm'] = $this->aauth->get_user()->username;
             $data = $this->locations->view($this->input->get('id'));
-            $data['currency'] = $this->locations->currencies();
-            $data['accounts'] = $this->locations->accountslist();
-            $data['warehouse'] = $this->locations->warehouses();
-            $data['online_pay'] = $this->locations->online_pay_settings($this->input->get('id'));
             $this->load->view('fixed/header', $head);
             $this->load->view('locations/edit', $data);
             $this->load->view('fixed/footer');

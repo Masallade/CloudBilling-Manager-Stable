@@ -469,6 +469,8 @@
 
                                   <label><input type="checkbox" name="stockWarehouseView" <?= isset($permissions['stockWarehouseView']) && $permissions['stockWarehouseView'] ? 'checked' : '' ?>> View Warehouse</label>
 
+                                  <label><input type="checkbox" name="stockUnits" <?= isset($permissions['stockUnits']) && $permissions['stockUnits'] ? 'checked' : '' ?>> Measurement Units</label>
+
                                   <label><input type="checkbox" name="stockProductsLabel" <?= isset($permissions['stockProductsLabel']) && $permissions['stockProductsLabel'] ? 'checked' : '' ?>> Products Label</label>
 
                                   <label><input type="checkbox" name="stockCustomLabel" <?= isset($permissions['stockCustomLabel']) && $permissions['stockCustomLabel'] ? 'checked' : '' ?>> Custom Label</label>

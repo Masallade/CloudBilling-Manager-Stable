@@ -84,7 +84,7 @@ function user_role($id = 5)
 function amountFormat($number)
 {
     $ci =& get_instance();
-    $query = $ci->db->query("SELECT currency FROM geopos_system WHERE id=1 LIMIT 1");
+    $query = $ci->db->query("SELECT currency FROM geopos_system  LIMIT 1");
     $row = $query->row_array();
     $currency = strtoupper($row['currency']);
     //get data from database
@@ -368,7 +368,7 @@ function amountExchange($number, $id = 0, $loc = 0)
     // } else {
 
     // ALWAYS USE: geopos_system.currency
-    $query = $ci->db->query("SELECT currency FROM geopos_system WHERE id=1 LIMIT 1");
+    $query = $ci->db->query("SELECT currency FROM geopos_system LIMIT 1");
     $row = $query->row_array();
     $currency = strtoupper($row['currency']);
 
@@ -409,7 +409,7 @@ function amountExchange_s($number, $id = 0, $loc = 0)
     // } else;
     
     // ALWAYS USE: geopos_system formatting settings
-    $query = $ci->db->query("SELECT currency FROM geopos_system WHERE id=1 LIMIT 1");
+    $query = $ci->db->query("SELECT currency FROM geopos_system LIMIT 1");
     $row = $query->row_array();
     $currency = strtoupper($row['currency']); // Ensure uppercase (though not used in return)
     
@@ -448,7 +448,7 @@ function edit_amountExchange_s($number, $id = 0, $loc = 0)
     // } else {
     
     // ALWAYS USE: geopos_system formatting settings
-    $query = $ci->db->query("SELECT currency FROM geopos_system WHERE id=1 LIMIT 1");
+    $query = $ci->db->query("SELECT currency FROM geopos_system LIMIT 1");
     $row = $query->row_array();
     $currency = strtoupper($row['currency']); // Ensure uppercase (though not used in return)
     
@@ -584,9 +584,21 @@ function location($number = 0)
     $ci->load->database();
     if ($number > 0) {
         $query2 = $ci->db->query("SELECT * FROM geopos_locations WHERE id=$number");
-        return $query2->row_array();
+        $location = $query2->row_array();
+        // Get logo and taxid from geopos_system table instead of location
+        $query_system = $ci->db->query("SELECT logo, taxid FROM geopos_system LIMIT 1");
+        $system = $query_system->row_array();
+        if ($system) {
+            if (isset($system['logo'])) {
+                $location['logo'] = $system['logo'];
+            }
+            if (isset($system['taxid'])) {
+                $location['taxid'] = $system['taxid'];
+            }
+        }
+        return $location;
     } else {
-        $query2 = $ci->db->query("SELECT cname,address,city,region,country,postbox,phone,email,taxid,logo,foundation FROM geopos_system WHERE id=1 LIMIT 1");
+        $query2 = $ci->db->query("SELECT cname,address,city,region,country,postbox,phone,email,taxid,logo,foundation FROM geopos_system  LIMIT 1");
         return $query2->row_array();
     }
 }
@@ -646,7 +658,7 @@ function currency($loc = 0, $id = 0)
     // } else {
     
     // ALWAYS USE: geopos_system.currency
-    $query = $ci->db->query("SELECT currency FROM geopos_system WHERE id=1 LIMIT 1");
+    $query = $ci->db->query("SELECT currency FROM geopos_system LIMIT 1");
     $row = $query->row_array();
     $currency = strtoupper($row['currency']);
     // }

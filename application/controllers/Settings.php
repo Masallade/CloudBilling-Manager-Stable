@@ -1045,7 +1045,7 @@ class Settings extends CI_Controller
         if ($this->input->post()) {
             // Set proper headers for JSON response
             $this->output->set_content_type('application/json');
-            
+
             $lang = $this->input->post('language', true);
 
             // Validate input
@@ -1056,16 +1056,16 @@ class Settings extends CI_Controller
 
             // Update language and get response
             $result = $this->settings->update_language(1, $lang);
-            
+
             // Ensure result is valid
             if (!is_array($result) || !isset($result['status'])) {
                 echo json_encode(['status' => 'Error', 'message' => 'An error occurred while updating language']);
                 return;
             }
-            
+
             // Ensure message exists
             $message = isset($result['message']) && !empty($result['message']) ? $result['message'] : 'Language updated successfully';
-            
+
             // Return JSON response
             echo json_encode(['status' => $result['status'], 'message' => $message]);
             return;

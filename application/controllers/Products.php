@@ -81,6 +81,11 @@ class Products extends CI_Controller
         $data['salessum'] = amountExchange($stock_data['total_salessum'], $this->aauth->get_user()->loc);
         $data['worthsum'] = amountExchange($stock_data['total_purchasesum'], $this->aauth->get_user()->loc);
 
+        // Get currency from geopos_system table
+        $query = $this->db->query("SELECT currency FROM geopos_system  LIMIT 1");
+        $row = $query->row_array();
+        $data['currency'] = !empty($row['currency']) ? strtoupper($row['currency']) : 'Symbol not found';
+
         $data['stock_out_filter'] = $stock_filter; // Set filter to '2' for out-of-stock products
         $head['title'] = "Products";
         $head['usernm'] = $this->aauth->get_user()->username;

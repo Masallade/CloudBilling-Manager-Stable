@@ -177,8 +177,8 @@
                             <!--th>VAT Code</th-->
                             <th><?php echo $this->lang->line('Category') ?></th>
                             <!--th><?php echo $this->lang->line('Warehouse') ?></th-->
-                            <th>Purchase Price (GBP)</th>
-                            <th>Sale Price (GBP)</th>
+                            <th>Purchase Price (<?php echo isset($currency) ? htmlspecialchars($currency) : 'GBP'; ?>)</th>
+                            <th>Sale Price (<?php echo isset($currency) ? htmlspecialchars($currency) : 'GBP'; ?>)</th>
                             <!-- <th>Weight</th> -->
                             <th><input type="checkbox" class="checkAll">&nbsp; ALL</th>
                             <th><?php echo $this->lang->line('Settings') ?></th>

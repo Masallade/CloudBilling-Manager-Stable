@@ -280,30 +280,60 @@
             var crsf_hash = '<?= $this->security->get_csrf_hash(); ?>';
             
             <?php 
-            // Get decimal settings and tax settings from database for JavaScript
+            // Get decimal settings from config (uses getUrlFromUnivarsalApi() function)
             $CI =& get_instance();
             $CI->load->database();
+            $univarsal_api_url_config = $CI->config->item('univarsal_api_url');
+            $decimal_places_config = isset($univarsal_api_url_config) && $univarsal_api_url_config !== '' ? (int)$univarsal_api_url_config : 2;
+            
+            // Get other decimal settings from database (separators)
             $query = $CI->db->query("SELECT * FROM univarsal_api WHERE id=4 LIMIT 1");
             $decimal_settings = $query->row_array();
             
-            // Try to get tax settings, with fallback if columns don't exist yet
-            try {
-                $query2 = $CI->db->query("SELECT tax_type, tax_rate FROM geopos_system WHERE id=1 LIMIT 1");
-                $tax_settings = $query2 ? $query2->row_array() : array();
-            } catch (Exception $e) {
-                $tax_settings = array();
-            }
+            // Get tax settings from config (uses getTaxRateFromDB() function)
+            $tax_rate_config = $CI->config->item('tax_rate');
+            $tax_rate_value = isset($tax_rate_config) && $tax_rate_config ? (float)$tax_rate_config : 20;
+            
+            // Get tax type from config if available, otherwise default to VAT
+            $tax_type_config = $CI->config->item('tax_type');
+            $tax_type_value = isset($tax_type_config) && $tax_type_config ? $tax_type_config : 'VAT';
             ?>
-            // Decimal configuration from settings
-            var decimal_places = <?= (int)$decimal_settings['url'] ?>;
-            var two_fixed = <?= (int)$decimal_settings['url'] ?>;
+            // Decimal configuration from config (uses $config['univarsal_api_url'] from config.php)
+            var decimal_places = <?= $decimal_places_config ?>;
+            var two_fixed = <?= $decimal_places_config ?>;
             var decimal_separator = '<?= $decimal_settings['key1'] ?>';
             var thousand_separator = '<?= $decimal_settings['key2'] ?>';
             
-            // Tax configuration from settings
-            var tax_type = '<?= isset($tax_settings['tax_type']) && $tax_settings['tax_type'] ? $tax_settings['tax_type'] : 'VAT' ?>';
-            var tax_rate = <?= isset($tax_settings['tax_rate']) && $tax_settings['tax_rate'] ? (float)$tax_settings['tax_rate'] : 20 ?>;
-            var tax_rate_decimal = <?= isset($tax_settings['tax_rate']) && $tax_settings['tax_rate'] ? (float)$tax_settings['tax_rate'] / 100 : 0.20 ?>;
+            // Tax configuration from config (uses $config['tax_rate'] from config.php)
+            var tax_type = '<?= $tax_type_value ?>';
+            var tax_rate = <?= $tax_rate_value ?>;
+            var tax_rate_decimal = <?= $tax_rate_value / 100 ?>;
+            
+            // Truncate function (no rounding) - truncates to specified decimal places
+            function truncateToDecimals(num, decimals) {
+                if (isNaN(num) || num === null || num === undefined) {
+                    var zeros = '';
+                    for (var i = 0; i < decimals; i++) zeros += '0';
+                    return '0.' + zeros;
+                }
+                var numStr = num.toString();
+                var decimalIndex = numStr.indexOf('.');
+                if (decimalIndex === -1) {
+                    var zeros = '';
+                    for (var i = 0; i < decimals; i++) zeros += '0';
+                    return numStr + '.' + zeros;
+                }
+                var integerPart = numStr.substring(0, decimalIndex);
+                var decimalPart = numStr.substring(decimalIndex + 1);
+                if (decimalPart.length > decimals) {
+                    decimalPart = decimalPart.substring(0, decimals);
+                } else {
+                    var zeros = '';
+                    for (var i = 0; i < (decimals - decimalPart.length); i++) zeros += '0';
+                    decimalPart = decimalPart + zeros;
+                }
+                return integerPart + '.' + decimalPart;
+            }
             
             // Force menu to be collapsed by default and prevent auto-expansion
             (function() {
